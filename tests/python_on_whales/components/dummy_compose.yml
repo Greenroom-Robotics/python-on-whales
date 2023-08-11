@@ -39,3 +39,7 @@ services:
     command: sleep infinity
     profiles:
       - my_test_profile2
+  busybox_with_up_envs:
+    image: busybox:latest
+    command: ["sh", "-c", "echo $VAR1,$VAR2"]
+    

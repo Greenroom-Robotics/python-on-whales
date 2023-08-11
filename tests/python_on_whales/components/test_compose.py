@@ -888,3 +888,22 @@ def test_docker_compose_run_build():
         == docker.image.list("some_random_image")[0].repo_tags[0].split(":latest")[0]
     )
     docker.image.remove("some_random_image", force=True)
+
+
+def test_compose_up_envs():
+    docker = DockerClient(
+        compose_files=[
+            PROJECT_ROOT / "tests/python_on_whales/components/dummy_compose.yml"
+        ],
+        compose_compatibility=True,
+    )
+    docker.compose.up(
+        ["busybox_with_up_envs"],
+        detach=True,
+        env={"VAR1": "hello", "VAR2": "world"},
+        force_recreate=True,
+    )
+    container = docker.compose.ps()[0]
+    output = container.logs()
+    assert output.replace("\n", "") == "hello,world"
+    docker.compose.down(timeout=1)

@@ -676,6 +676,7 @@ class ComposeCLI(DockerCLICaller):
         wait: bool = False,
         no_attach_services: Union[List[str], str, None] = None,
         pull: Literal["always", "missing", "never", None] = None,
+        env: Dict[str, str] = {},
     ):
         """Start the containers.
 
@@ -712,6 +713,7 @@ class ComposeCLI(DockerCLICaller):
             wait: Wait for services to be running|healthy. Implies detached mode.
             no_attach_services: The services not to attach to.
             pull: Pull image before running (“always”|”missing”|”never”).
+            env: Environment variables to set in the container
 
         # Returns
             `None` at the moment. The plan is to be able to capture and stream the logs later.
@@ -746,7 +748,7 @@ class ComposeCLI(DockerCLICaller):
             services = to_list(services)
             full_cmd += services
         # important information is written to both stdout AND stderr.
-        run(full_cmd, capture_stdout=quiet, capture_stderr=quiet)
+        run(full_cmd, capture_stdout=quiet, capture_stderr=quiet, env=env)
 
     def version(self) -> str:
         """Returns the version of docker compose as a `str`."""
