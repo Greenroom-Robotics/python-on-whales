@@ -906,6 +906,7 @@ class ComposeCLI(DockerCLICaller):
         pull: Literal["always", "missing", "never", None] = ...,
         stream_logs: Literal[True] = ...,
         wait_timeout: Optional[int] = ...,
+        env: Dict[str, str] = ...
     ) -> Iterable[Tuple[str, bytes]]: ...
 
     @overload
@@ -931,6 +932,7 @@ class ComposeCLI(DockerCLICaller):
         pull: Literal["always", "missing", "never", None] = ...,
         stream_logs: Literal[False] = ...,
         wait_timeout: Optional[int] = ...,
+        env: Dict[str, str] = ...
     ) -> None: ...
 
     def up(
@@ -955,6 +957,7 @@ class ComposeCLI(DockerCLICaller):
         pull: Literal["always", "missing", "never", None] = None,
         stream_logs: bool = False,
         wait_timeout: Optional[int] = None,
+        env: Dict[str, str] = {},
     ):
         """Start the containers.
 
@@ -1000,6 +1003,7 @@ class ComposeCLI(DockerCLICaller):
                 See [the streaming guide](https://gabrieldemarmiesse.github.io/python-on-whales/user_guide/docker_run/#stream-the-output) if you are
                 not familiar with the streaming of logs in Python-on-whales.
             wait_timeout: Maximum duration to wait for the project to be running|healthy
+            env: Environment variables to set in the container
         """
         if quiet and stream_logs:
             raise ValueError(
@@ -1040,7 +1044,7 @@ class ComposeCLI(DockerCLICaller):
             return stream_stdout_and_stderr(full_cmd)
         else:
             # important information is written to both stdout AND stderr.
-            run(full_cmd, capture_stdout=quiet, capture_stderr=quiet)
+            run(full_cmd, capture_stdout=quiet, capture_stderr=quiet, env=env)
 
     def version(self) -> str:
         """Returns the version of docker compose as a `str`."""
